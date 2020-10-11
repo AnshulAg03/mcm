@@ -49,6 +49,9 @@ public class Department implements Serializable {
 	//bi-directional many-to-one association to User
 	@OneToMany(mappedBy="department")
 	private List<User> users;
+	
+	@OneToMany(mappedBy="department")
+	private List<User> cases;
 
 	public Department() {
 	}
