@@ -6,11 +6,17 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+
+import com.mcm.api.dto.request.CreateNewUserRequestDto;
+
 
 
 /**
@@ -24,11 +30,14 @@ import javax.persistence.Table;
 public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private String email;
+	
 
 	@Id
+	@GeneratedValue(generator = "system-uuid")
+	@GenericGenerator(name = "system-uuid", strategy = "uuid")
+	@Column(name = "ID", unique = true, nullable = false)
 	private String id;
-
+	private String email;
 	private String logintype;
 
 	private String password;
@@ -41,9 +50,9 @@ public class User implements Serializable {
 	private String userid;
 	
 	
-	//bi-directional many-to-many association to Team
-	@ManyToMany(mappedBy="users")
-	private List<Team> teams;
+	//bi-directional many-to-one association to TeamUserMapping
+		@OneToMany(mappedBy="user")
+		private List<TeamUserMapping> teamUserMappings;
 	
 	//bi-directional many-to-one association to Department
 		@ManyToOne(fetch = FetchType.LAZY)
@@ -53,6 +62,21 @@ public class User implements Serializable {
 
 	public User() {
 	}
+	
+	
+
+	public User(CreateNewUserRequestDto createNewUserRequestDto, Department department) {
+		super();
+		//this.id = UUID.randomUUID().toString().replace("-", "");
+		this.userid = createNewUserRequestDto.getUserid();
+		this.uname = createNewUserRequestDto.getName();
+		this.department = department;
+		this.email = createNewUserRequestDto.getEmail();
+		this.password = createNewUserRequestDto.getPassword();
+		this.logintype = createNewUserRequestDto.getLogintype();
+	}
+
+
 
 	public String getEmail() {
 		return this.email;
@@ -111,12 +135,12 @@ public class User implements Serializable {
 	}
 
 	
-	public List<Team> getTeams() {
-		return this.teams;
+	public List<TeamUserMapping> getTeamUserMappings() {
+		return this.teamUserMappings;
 	}
 
-	public void setTeams(List<Team> teams) {
-		this.teams = teams;
+	public void setTeamUserMappings(List<TeamUserMapping> teamUserMappings) {
+		this.teamUserMappings = teamUserMappings;
 	}
 
 	public Department getDepartment() {
