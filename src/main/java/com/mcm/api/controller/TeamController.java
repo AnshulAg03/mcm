@@ -94,7 +94,7 @@ public class TeamController {
 				Department dept = d.get();
 				deptList.add(dept);
 			}
-			t.setDepartments(deptList);
+
 			teamRepository.save(t);
 			
 			return new ResponseEntity<>(new SuccessResponseDto("success"), HttpStatus.OK);

@@ -9,32 +9,32 @@ import javax.persistence.*;
  * 
  */
 @Entity
-@IdClass(TeamUserId.class)
 @Table(name="TEAM_USER_MAPPING")
-@NamedQuery(name="TeamUserMapping.findAll", query="SELECT t FROM TeamUserMapping t")
 public class TeamUserMapping implements Serializable {
 	private static final long serialVersionUID = 1L;
+	
+	@EmbeddedId
+	private TeamUserId id;
 	
 	private String isleader;
 
 	private String status;
 
 	//bi-directional many-to-one association to Team
-	@Id
 	@ManyToOne
-	@JoinColumn(name="TID", referencedColumnName="TEAMID")
+	@JoinColumn(name="TID", insertable = false, updatable = false)
 	private Team team;
 
 	//bi-directional many-to-one association to User
-	@Id
 	@ManyToOne
-	@JoinColumn(name="USERID", referencedColumnName="ID")
+	@JoinColumn(name="USERID", insertable = false, updatable = false)
 	private User user;
 
 	public TeamUserMapping() {
 	}
 
 	public TeamUserMapping(Team team, User u, String isAdmin) {
+		this.id= new TeamUserId(team.getTeamId(), user.getId());
 		this.team = team;
 		this.user = u;
 		if(u.getId().equals(isAdmin)) {

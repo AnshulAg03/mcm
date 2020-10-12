@@ -5,21 +5,20 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.mcm.api.dto.request.CreateNewTeamRequestDto;
-
 
 /**
  * The persistent class for the TEAMS database table.
  * 
  */
 @Entity
-//@Embeddable
 @Table(name="TEAMS")
-//@NamedQuery(name="Team.findAll", query="SELECT t FROM Team t")
 public class Team implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -30,18 +29,32 @@ public class Team implements Serializable {
 
 	private String name;
 
-	//bi-directional many-to-many association to Cas
-	@ManyToMany(mappedBy="teams")
-	private List<Cases> cases;
+//	//bi-directional many-to-many association to Department
+//	@ManyToMany(mappedBy="teams")
+//	private List<Department> departments;
+	
+	//private List<Cases> cases;
 
-	//bi-directional many-to-many association to Department
-	@ManyToMany(mappedBy="teams")
-	private List<Department> departments;
+	//bi-directional one-to-one association to DepTeamMapping
+	@OneToMany(mappedBy="team")
+	private List<DepTeamMapping> depTeamMapping;
 
 	//bi-directional many-to-one association to TeamUserMapping
 	@OneToMany(mappedBy="team")
 	private List<TeamUserMapping> teamUserMappings;
+	
+	//bi-directional many-to-one association to TeamUserMapping
+	@OneToMany(mappedBy="team")
+	private List<CaseTeamMapping> caseTeamMappings;
 
+
+	public List<CaseTeamMapping> getCaseTeamMappings() {
+		return caseTeamMappings;
+	}
+
+	public void setCaseTeamMappings(List<CaseTeamMapping> caseTeamMappings) {
+		this.caseTeamMappings = caseTeamMappings;
+	}
 
 	public Team() {
 	}
@@ -86,20 +99,21 @@ public class Team implements Serializable {
 		this.teamUserMappings = teamUserMappings;
 	}
 
-	public List<Cases> getCases() {
-		return this.cases;
+//	public List<Department> getDepartments() {
+//		return departments;
+//	}
+//
+//	public void setDepartments(List<Department> departments) {
+//		this.departments = departments;
+//	}
+
+	public List<DepTeamMapping> getDepTeamMapping() {
+		return depTeamMapping;
 	}
 
-	public void setCases(List<Cases> cases) {
-		this.cases = cases;
+	public void setDepTeamMapping(List<DepTeamMapping> depTeamMapping) {
+		this.depTeamMapping = depTeamMapping;
 	}
 
-	public List<Department> getDepartments() {
-		return this.departments;
-	}
-
-	public void setDepartments(List<Department> departments) {
-		this.departments = departments;
-	}
 
 }

@@ -6,24 +6,21 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class TeamUserId implements Serializable{
-
+public class DepTeamId implements Serializable{
 	private static final long serialVersionUID = 1L;
 
+	@Column(name="DID")
+	private String department;
+	
 	@Column(name="TID")
 	private String team;
-	
-	@Column(name="USERID")
-	private String user;
 
-	public TeamUserId(String team, String user) {
-		super();
-		this.team = team;
-		this.user = user;
+	public String getDepartment() {
+		return department;
 	}
-	
-	public TeamUserId() {
-		
+
+	public void setDepartment(String department) {
+		this.department = department;
 	}
 
 	public String getTeam() {
@@ -34,13 +31,16 @@ public class TeamUserId implements Serializable{
 		this.team = team;
 	}
 
-	public String getUser() {
-		return user;
+	public DepTeamId(String department, String team) {
+		super();
+		this.department = department;
+		this.team = team;
 	}
 
-	public void setUser(String user) {
-		this.user = user;
+	public DepTeamId() {
+		super();
 	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -48,7 +48,7 @@ public class TeamUserId implements Serializable{
 		result = prime * result
 				+ ((team == null) ? 0 : team.hashCode());
 		result = prime * result
-				+ ((user == null) ? 0 : user.hashCode());
+				+ ((department == null) ? 0 : department.hashCode());
 		return result;
 	}
 
@@ -61,7 +61,7 @@ public class TeamUserId implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		
-		TeamUserId other = (TeamUserId) obj;
+		DepTeamId other = (DepTeamId) obj;
 		
 		if (team == null) {
 			if (other.team != null)
@@ -69,13 +69,14 @@ public class TeamUserId implements Serializable{
 		} else if (!team.equals(other.team))
 			return false;
 		
-		if (user == null) {
-			if (other.user != null)
+		if (department == null) {
+			if (other.department != null)
 				return false;
-		} else if (!user.equals(other.user))
+		} else if (!department.equals(other.department))
 			return false;
 		
 		return true;
 	}
+	
 	
 }

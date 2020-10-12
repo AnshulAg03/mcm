@@ -6,23 +6,21 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class TeamUserId implements Serializable{
-
-	private static final long serialVersionUID = 1L;
+public class CaseTeamId implements Serializable{
 
 	@Column(name="TID")
 	private String team;
 	
-	@Column(name="USERID")
-	private String user;
+	@Column(name="CID")
+	private String case_;
 
-	public TeamUserId(String team, String user) {
+	public CaseTeamId(String team, String case_) {
 		super();
 		this.team = team;
-		this.user = user;
+		this.case_ = case_;
 	}
 	
-	public TeamUserId() {
+	public CaseTeamId() {
 		
 	}
 
@@ -34,13 +32,15 @@ public class TeamUserId implements Serializable{
 		this.team = team;
 	}
 
-	public String getUser() {
-		return user;
+	public String getCase_() {
+		return case_;
 	}
 
-	public void setUser(String user) {
-		this.user = user;
-	}
+	public void setCase_(String case_) {
+		this.case_ = case_;
+	}	
+	
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -48,7 +48,7 @@ public class TeamUserId implements Serializable{
 		result = prime * result
 				+ ((team == null) ? 0 : team.hashCode());
 		result = prime * result
-				+ ((user == null) ? 0 : user.hashCode());
+				+ ((case_ == null) ? 0 : case_.hashCode());
 		return result;
 	}
 
@@ -61,7 +61,7 @@ public class TeamUserId implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		
-		TeamUserId other = (TeamUserId) obj;
+		CaseTeamId other = (CaseTeamId) obj;
 		
 		if (team == null) {
 			if (other.team != null)
@@ -69,13 +69,14 @@ public class TeamUserId implements Serializable{
 		} else if (!team.equals(other.team))
 			return false;
 		
-		if (user == null) {
-			if (other.user != null)
+		if (case_ == null) {
+			if (other.case_ != null)
 				return false;
-		} else if (!user.equals(other.user))
+		} else if (!case_.equals(other.case_))
 			return false;
 		
 		return true;
 	}
+
 	
 }

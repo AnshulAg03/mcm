@@ -7,6 +7,11 @@ public class UpdateTeamRequestDto {
 	private String department;
 	
 	private String teamName;
+	
+	public UpdateTeamRequestDto() {
+		super();
+	}
+
 	private String description;
 
 	private List<String> teamMembers;

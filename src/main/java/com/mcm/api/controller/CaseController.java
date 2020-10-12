@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mcm.api.services.CaseService;
 
 
-
 @RestController
 public class CaseController {
 
@@ -39,6 +38,11 @@ public class CaseController {
 	@GetMapping("/caseBydepartment")
 	public ResponseEntity<String> groupByDepartment() throws JSONException {
 		return new ResponseEntity(caseService.groupByDepartment(), HttpStatus.OK) ;
+	}
+	
+	@PostMapping("/caseInsert")
+	public ResponseEntity<String> caseInsert(@RequestBody Map<String, Object> json) throws JSONException {
+		return new ResponseEntity(caseService.caseInsert(json), HttpStatus.OK) ;
 	}
 
 }
