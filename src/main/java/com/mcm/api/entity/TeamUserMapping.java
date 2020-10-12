@@ -9,21 +9,24 @@ import javax.persistence.*;
  * 
  */
 @Entity
+@IdClass(TeamUserId.class)
 @Table(name="TEAM_USER_MAPPING")
 @NamedQuery(name="TeamUserMapping.findAll", query="SELECT t FROM TeamUserMapping t")
 public class TeamUserMapping implements Serializable {
 	private static final long serialVersionUID = 1L;
-
+	
 	private String isleader;
 
 	private String status;
 
 	//bi-directional many-to-one association to Team
+	@Id
 	@ManyToOne
 	@JoinColumn(name="TID", referencedColumnName="TEAMID")
 	private Team team;
 
 	//bi-directional many-to-one association to User
+	@Id
 	@ManyToOne
 	@JoinColumn(name="USERID", referencedColumnName="USERID")
 	private User user;

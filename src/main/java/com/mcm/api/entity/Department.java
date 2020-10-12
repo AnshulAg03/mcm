@@ -48,6 +48,17 @@ public class Department implements Serializable {
 	public Department() {
 	}
 
+	
+	public String getId() {
+		return id;
+	}
+
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+
 	public String getDepartment() {
 		return this.department;
 	}
