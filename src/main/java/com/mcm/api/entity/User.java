@@ -30,7 +30,7 @@ import com.mcm.api.dto.request.CreateNewUserRequestDto;
 public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	
+
 
 	@Id
 	@GeneratedValue(generator = "system-uuid")
@@ -48,22 +48,22 @@ public class User implements Serializable {
 
 	@Column(unique = true)
 	private String userid;
-	
-	
+
+
 	//bi-directional many-to-one association to TeamUserMapping
-		@OneToMany(mappedBy="user")
-		private List<TeamUserMapping> teamUserMappings;
-	
+	@OneToMany(mappedBy="user")
+	private List<TeamUserMapping> teamUserMappings;
+
 	//bi-directional many-to-one association to Department
-		@ManyToOne(fetch = FetchType.LAZY)
-		@JoinColumn(name="DEPARTMENTID", referencedColumnName="ID")
-		private Department department;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="DEPARTMENTID", referencedColumnName="ID")
+	private Department department;
 
 
 	public User() {
 	}
-	
-	
+
+
 
 	public User(CreateNewUserRequestDto createNewUserRequestDto, Department department) {
 		super();
@@ -75,8 +75,6 @@ public class User implements Serializable {
 		this.password = createNewUserRequestDto.getPassword();
 		this.logintype = createNewUserRequestDto.getLogintype();
 	}
-
-
 
 	public String getEmail() {
 		return this.email;
@@ -134,7 +132,7 @@ public class User implements Serializable {
 		this.userid = userid;
 	}
 
-	
+
 	public List<TeamUserMapping> getTeamUserMappings() {
 		return this.teamUserMappings;
 	}
