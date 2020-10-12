@@ -35,5 +35,10 @@ public class CaseController {
 	public ResponseEntity<String> getCasesByDepartmentId(@RequestBody Map<String, String> json) throws JSONException {
 		return new ResponseEntity(caseService.getCasesByDepartmentId(json.get("departid")), HttpStatus.OK) ;
 	}
+	
+	@GetMapping("/caseBydepartment")
+	public ResponseEntity<String> groupByDepartment() throws JSONException {
+		return new ResponseEntity(caseService.groupByDepartment(), HttpStatus.OK) ;
+	}
 
 }

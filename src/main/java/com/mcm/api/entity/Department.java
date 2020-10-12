@@ -23,6 +23,15 @@ import org.hibernate.annotations.GenericGenerator;
 //@Embeddable
 //@NamedQuery(name="Department.findAll", query="SELECT d FROM Department d")
 public class Department implements Serializable {
+	public List<User> getCases() {
+		return cases;
+	}
+
+
+	public void setCases(List<User> cases) {
+		this.cases = cases;
+	}
+
 	private static final long serialVersionUID = 1L;
 	
 	@Id

@@ -1,6 +1,7 @@
 package com.mcm.api.services;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -13,9 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
+import com.mcm.api.dto.response.cases.CaseListByDepartmentResponseDto;
 import com.mcm.api.dto.response.cases.CaseListResponseDto;
 import com.mcm.api.entity.Cases;
-import com.mcm.api.entity.Team;
 import com.mcm.api.entity.TeamUserMapping;
 import com.mcm.api.entity.User;
 import com.mcm.api.repository.CaseRepository;
@@ -63,6 +64,30 @@ public class CaseService {
 		return generateResponse(cases);
 	}
 	
+	public String groupByDepartment() {
+		List<Object> casesByDepartment = caseRepository.findByDepartment();
+		
+		HashMap<String, List<Object>> map = new HashMap<>();
+		
+		for(Object case_: casesByDepartment) {
+			Object caseInfo[] =  (Object[]) case_;
+			String key = (String) caseInfo[1];
+			CaseListByDepartmentResponseDto caseResponseObj = new CaseListByDepartmentResponseDto(case_);
+			if(map.containsKey(key)) {
+				map.get(key).add(caseResponseObj);
+				continue;
+			}
+			
+			ArrayList<Object> caseList = new ArrayList<>();
+			caseList.add(caseResponseObj);
+			map.put((String) caseInfo[1], caseList);
+		}
+		
+		Gson gson = new Gson();
+		
+		return gson.toJson(map);
+	}
+	
 	public String generateResponse(Iterable<Cases> cases) throws JSONException {
 		List<CaseListResponseDto> caseListResponses = 
 				  StreamSupport.stream(cases.spliterator(), false).map(CaseListResponseDto::new)
@@ -78,4 +103,5 @@ public class CaseService {
 		
 		return responseObj.toString();
 	}
+	
 }
