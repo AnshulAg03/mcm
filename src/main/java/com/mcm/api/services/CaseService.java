@@ -1,9 +1,12 @@
 package com.mcm.api.services;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -12,14 +15,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.google.gson.Gson;
 import com.mcm.api.dto.response.cases.CaseListByDepartmentResponseDto;
 import com.mcm.api.dto.response.cases.CaseListResponseDto;
+import com.mcm.api.entity.CaseTeamMapping;
 import com.mcm.api.entity.Cases;
+import com.mcm.api.entity.Team;
 import com.mcm.api.entity.TeamUserMapping;
 import com.mcm.api.entity.User;
 import com.mcm.api.repository.CaseRepository;
+import com.mcm.api.repository.CaseTeamMappingRepository;
+import com.mcm.api.repository.TeamRepository;
 import com.mcm.api.repository.UserRepository;
 
 @Service
@@ -29,6 +37,12 @@ public class CaseService {
 	
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	TeamRepository teamRepository;
+	
+	@Autowired
+	CaseTeamMappingRepository caseTeamMappingRepository;
 	
 	public CaseService() {
 		
@@ -50,8 +64,14 @@ public class CaseService {
 		
 		List<Cases> cases = new ArrayList<>();
 		
+		
+		
 		for(TeamUserMapping teamUserMapping: teamUserMappings) {
-			cases.addAll(teamUserMapping.getTeam().getCases());
+			Team team = teamUserMapping.getTeam();
+			List<CaseTeamMapping> caseTeamMapping = team.getCaseTeamMappings();
+			for(CaseTeamMapping caseTeamMappingObj: caseTeamMapping) {
+				cases.add(caseTeamMappingObj.getCase_());
+			}
 		}
 		
 		
@@ -102,6 +122,46 @@ public class CaseService {
 		}
 		
 		return responseObj.toString();
+	}
+	
+	@Transactional
+	public String caseInsert(Map<String, Object> caseBody) throws JSONException {
+		Cases case_ = new Cases();
+		
+		case_.setCname((String)caseBody.get("casename"));
+		case_.setCasetype((String)caseBody.get("casetype"));
+		case_.setDescription((String)caseBody.get("discription"));
+		case_.setDepartmentid((String)caseBody.get("deptid"));
+		case_.setDuedate(new BigDecimal((String)caseBody.get("duedate")));
+		case_.setStatus("Active");
+		
+		ArrayList<String> teamIds =  (ArrayList<String>)caseBody.get("teams");	
+		
+		Iterable<Team> teams = teamRepository.findAllById(teamIds);
+		
+		List<Team> teamList = 
+				  StreamSupport.stream(teams.spliterator(), false)
+				    .collect(Collectors.toList());
+		
+		
+		String gid = UUID.randomUUID().toString().replace("-", "");
+		String pid = UUID.randomUUID().toString().replace("-", "");
+		
+		case_.setId(gid);
+		case_.setPid(pid);
+		
+		caseRepository.save(case_);
+		
+		for(Team team: teamList) {
+			CaseTeamMapping caseTeamMapping = new CaseTeamMapping(team, case_, "Active");
+			
+			caseTeamMappingRepository.save(caseTeamMapping);
+		}
+		
+		JSONObject response = new JSONObject();
+		response.put("code", "success");
+
+		return response.toString();
 	}
 	
 }
