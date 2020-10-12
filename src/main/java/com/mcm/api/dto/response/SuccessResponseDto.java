@@ -21,6 +21,11 @@ public class SuccessResponseDto {
 			super();
 			this.code = code;
 		}
+
+		@Override
+		public String toString() {
+			return "{\"code\":\"" + code + "\"}";
+		}
 		
 		
 }

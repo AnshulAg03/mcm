@@ -3,6 +3,7 @@
  */
 package com.mcm.api.repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,9 +22,7 @@ public interface CaseRepository extends CrudRepository<Cases, String> {
 	@Query("select c.id,d.department,c.departmentid,c.status FROM Cases c left join Department d on c.departmentid=d.id")
 	public List<Object> findByDepartment();
 
-	//Optional<Cases> findByIdAndTeamid(String id, String teamid);
-
-	int countByStatusAndDuedateLessThan(String string, long currentTimeMillis);
+	int countByStatusAndDuedateLessThan(String string, BigDecimal currentTimeMillis);
 
 	Optional<Cases> findById(String id);
 

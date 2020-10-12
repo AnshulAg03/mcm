@@ -45,7 +45,7 @@ public class Cases implements Serializable {
 
 	private String status;
 	
-	@OneToMany(mappedBy="case_")
+	@OneToMany(mappedBy="cases")
 	private List<CaseTeamMapping> caseTeamMappings;
 	
 	@ManyToOne(fetch = FetchType.LAZY)

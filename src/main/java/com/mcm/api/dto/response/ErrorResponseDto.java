@@ -21,5 +21,10 @@ public class ErrorResponseDto {
 		this.error = error;
 	}
 	
+	@Override
+	public String toString() {
+		return "{\"error\":\"" + error + "\"}";
+	}
+	
 	
 }

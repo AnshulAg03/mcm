@@ -26,7 +26,7 @@ public class CaseTeamMapping implements Serializable {
 	//bi-directional many-to-one association to User
 	@ManyToOne
 	@JoinColumn(name="CID", insertable = false, updatable = false)
-	private Cases case_;
+	private Cases cases;
 
 	public CaseTeamMapping() {
 	}
@@ -34,7 +34,7 @@ public class CaseTeamMapping implements Serializable {
 	public CaseTeamMapping(Team team, Cases case_, String status) {
 		this.id = new CaseTeamId(team.getTeamId(), case_.getId());
 		this.team = team;
-		this.case_ = case_;
+		this.cases = case_;
 		this.status = status;
 	}
 
@@ -54,12 +54,12 @@ public class CaseTeamMapping implements Serializable {
 		this.team = team;
 	}
 
-	public Cases getCase_() {
-		return case_;
+	public Cases getCases() {
+		return cases;
 	}
 
-	public void setCase_(Cases case_) {
-		this.case_ = case_;
+	public void setCases(Cases case_) {
+		this.cases = case_;
 	}
 	
 	
