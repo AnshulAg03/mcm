@@ -1,5 +1,6 @@
 package com.mcm.api.services;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,6 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,6 +45,9 @@ public class CaseService {
 	
 	@Autowired
 	CaseTeamMappingRepository caseTeamMappingRepository;
+	
+	@Value("${app.upload.directory}")
+	String uploadPath;
 	
 	public CaseService() {
 		
@@ -157,6 +162,23 @@ public class CaseService {
 			
 			caseTeamMappingRepository.save(caseTeamMapping);
 		}
+		
+		File file = new File(uploadPath.concat("/").concat(gid));
+		file.mkdir();
+		
+		JSONObject response = new JSONObject();
+		response.put("code", "success");
+
+		return response.toString();
+	}
+	
+	public String caseClose(String caseId) throws JSONException {
+		Optional<Cases> caseOptional_ = caseRepository.findById(caseId);
+		Cases case_ = caseOptional_.get();
+		
+		case_.setStatus("Close");
+		
+		caseRepository.save(case_);
 		
 		JSONObject response = new JSONObject();
 		response.put("code", "success");

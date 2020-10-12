@@ -44,5 +44,10 @@ public class CaseController {
 	public ResponseEntity<String> caseInsert(@RequestBody Map<String, Object> json) throws JSONException {
 		return new ResponseEntity(caseService.caseInsert(json), HttpStatus.OK) ;
 	}
+	
+	@PostMapping("/caseClose")
+	public ResponseEntity<String> caseClose(@RequestBody Map<String, String> json) throws JSONException {
+		return new ResponseEntity(caseService.caseClose(json.get("caseid")), HttpStatus.OK) ;
+	}
 
 }
