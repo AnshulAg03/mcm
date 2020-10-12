@@ -8,6 +8,8 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class CaseTeamId implements Serializable{
 
+	private static final long serialVersionUID = 1L;
+
 	@Column(name="TID")
 	private String team;
 	
