@@ -3,6 +3,7 @@ package com.mcm.api.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -15,11 +16,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mcm.api.dto.request.CreateNewTeamRequestDto;
+import com.mcm.api.dto.request.UpdateTeamRequestDto;
+import com.mcm.api.dto.request.isLeaderRequestDto;
+import com.mcm.api.dto.response.ErrorResponseDto;
+import com.mcm.api.dto.response.GetAllLeadersResponseDto;
 import com.mcm.api.dto.response.SuccessResponseDto;
 import com.mcm.api.dto.response.TeamListResponseDto;
+import com.mcm.api.dto.response.isLeaderResponseDto;
+import com.mcm.api.entity.Department;
 import com.mcm.api.entity.Team;
 import com.mcm.api.entity.TeamUserMapping;
 import com.mcm.api.entity.User;
+import com.mcm.api.repository.DepartmentRepository;
 import com.mcm.api.repository.TeamRepository;
 import com.mcm.api.repository.TeamUserMappingRepository;
 import com.mcm.api.repository.UserRepository;
@@ -35,14 +43,15 @@ public class TeamController {
 
 	@Autowired
 	TeamUserMappingRepository teamUserMappingRepository;
+	
+	@Autowired
+	DepartmentRepository departmentRepo;
 
-	@GetMapping("/teamsList")
+	@GetMapping("/teamList")
 	public ResponseEntity getTeams() {
 		Iterable<Team> teams = teamRepository.findAll();
 		List<Team> teamList = 
 				StreamSupport.stream(teams.spliterator(), false).collect(Collectors.toList());
-//		
-		
 		List<List<TeamListResponseDto>> teamUserMapping = teamList.stream().map(team-> team.getTeamUserMappings().
 				stream().map(TeamListResponseDto::new).collect(Collectors.toList())).collect(Collectors.toList());
 		Map<String, List<TeamListResponseDto>> result= teamUserMapping.stream().flatMap(List::stream)
@@ -70,5 +79,51 @@ public class TeamController {
 
 		return new ResponseEntity<>(new SuccessResponseDto("success"), HttpStatus.OK);
 	}
+	
+	@PostMapping("/teamEdit")
+	public ResponseEntity editTeam(@RequestBody UpdateTeamRequestDto request) {
 
+		Optional<Team> team = teamRepository.findById(request.getTeamId());
+		if(team.isPresent()) {
+			Team t = team.get();
+			t.setName(request.getTeamName());
+			t.setDescription(request.getDescription());
+			List<Department> deptList = new ArrayList<Department>();
+			Optional<Department> d = departmentRepo.findById(request.getDepartment());
+			if(d.isPresent()) {
+				Department dept = d.get();
+				deptList.add(dept);
+			}
+			t.setDepartments(deptList);
+			teamRepository.save(t);
+			
+			return new ResponseEntity<>(new SuccessResponseDto("success"), HttpStatus.OK);
+		}
+		return new ResponseEntity<>(new ErrorResponseDto("Team doesn't exist"), HttpStatus.OK);
+	}
+	
+	@GetMapping("/isleader")
+	public ResponseEntity fetchLeader(@RequestBody isLeaderRequestDto request) {
+
+		Optional<User> user = userRepository.findById(request.getUserid());
+		if(!user.isPresent()) {
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		Iterable<TeamUserMapping> teamUsers = teamUserMappingRepository.findAllByUser(user.get());
+		List<isLeaderResponseDto> result = StreamSupport.stream(teamUsers.spliterator(), false).map(TeamUserMapping::getTeam).map(isLeaderResponseDto::new)
+				.collect(Collectors.toList());
+
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+	
+	@GetMapping("/isLeaderall")
+	public ResponseEntity getAllLeaders() {
+		Iterable<TeamUserMapping> teams = teamUserMappingRepository.findAll();
+		List<GetAllLeadersResponseDto> result = 
+				StreamSupport.stream(teams.spliterator(), false).filter(tum->tum.getUser()!=null).map(GetAllLeadersResponseDto::new).collect(Collectors.toList());
+		
+		return new ResponseEntity(result, HttpStatus.OK) ;
+	}
+	
+	
 }

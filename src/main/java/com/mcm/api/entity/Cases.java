@@ -37,6 +37,10 @@ public class Cases implements Serializable {
 	private String pid;
 
 	private String status;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="DEPARTMENTID", referencedColumnName="ID")
+    private Department department;
 
 	//bi-directional many-to-many association to Team
 	@ManyToMany
@@ -52,6 +56,14 @@ public class Cases implements Serializable {
 	private List<Team> teams;
 
 	public Cases() {
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public String getCasetype() {
@@ -133,5 +145,12 @@ public class Cases implements Serializable {
 	public void setTeams(List<Team> teams) {
 		this.teams = teams;
 	}
+	
+	public Department getDepartment() {
+		return department;
+	}
 
+	public void setDepartment(Department department) {
+		this.department = department;
+	}
 }

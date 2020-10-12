@@ -28,7 +28,7 @@ public class TeamUserMapping implements Serializable {
 	//bi-directional many-to-one association to User
 	@Id
 	@ManyToOne
-	@JoinColumn(name="USERID", referencedColumnName="USERID")
+	@JoinColumn(name="USERID", referencedColumnName="ID")
 	private User user;
 
 	public TeamUserMapping() {

@@ -1,8 +1,8 @@
 package com.mcm.api.dto.request;
 
-public class UserByDepartmentRequestDto {
-	
-	String departmentid;
+public class GetTeamByDepartmentRequestDto {
+	private String departmentid;
+
 	public String getDepartmentid() {
 		return departmentid;
 	}
@@ -10,6 +10,9 @@ public class UserByDepartmentRequestDto {
 	public void setDepartmentid(String departmentid) {
 		this.departmentid = departmentid;
 	}
-	
 
+	public GetTeamByDepartmentRequestDto() {
+		super();
+	}
+	
 }

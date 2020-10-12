@@ -22,7 +22,7 @@ import com.mcm.api.dto.request.CreateNewTeamRequestDto;
 //@NamedQuery(name="Team.findAll", query="SELECT t FROM Team t")
 public class Team implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	private String teamId;
 
@@ -39,13 +39,13 @@ public class Team implements Serializable {
 	private List<Department> departments;
 
 	//bi-directional many-to-one association to TeamUserMapping
-		@OneToMany(mappedBy="team")
-		private List<TeamUserMapping> teamUserMappings;
+	@OneToMany(mappedBy="team")
+	private List<TeamUserMapping> teamUserMappings;
 
 
 	public Team() {
 	}
-	
+
 	public Team(CreateNewTeamRequestDto request) {
 		super();
 		this.name = request.getTeamName();
@@ -77,7 +77,7 @@ public class Team implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public List<TeamUserMapping> getTeamUserMappings() {
 		return this.teamUserMappings;
 	}
