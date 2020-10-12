@@ -18,8 +18,10 @@ import com.mcm.api.dto.response.GetAllLeadersResponseDto;
 import com.mcm.api.dto.response.GetDepartmentListResponseDto;
 import com.mcm.api.dto.response.GetTeamByDepartmentResponseDto;
 import com.mcm.api.dto.response.SuccessResponseDto;
+import com.mcm.api.entity.DepTeamMapping;
 import com.mcm.api.entity.Department;
 import com.mcm.api.entity.Team;
+import com.mcm.api.entity.TeamUserMapping;
 import com.mcm.api.repository.DepartmentRepository;
 
 @RestController
@@ -50,8 +52,10 @@ public class DepartmentController {
 	public ResponseEntity getTeamByDepartment(@RequestBody GetTeamByDepartmentRequestDto req) {
 		Iterable<Department> departments = departmentRepo.findAllById(req.getDepartmentid());
 		List<GetTeamByDepartmentResponseDto> result = 
-				StreamSupport.stream(departments.spliterator(), false).map(dp->dp.getTeams()).flatMap(List::stream).map(GetTeamByDepartmentResponseDto::new).collect(Collectors.toList());
-		
+				StreamSupport.stream(departments.spliterator(), false)
+				.map(dp->dp.getDepTeamMappings()).flatMap(List::stream)
+				.map(DepTeamMapping::getTeam)
+				.map(GetTeamByDepartmentResponseDto::new).collect(Collectors.toList());		
 		return new ResponseEntity(result, HttpStatus.OK) ;
 	}
 }

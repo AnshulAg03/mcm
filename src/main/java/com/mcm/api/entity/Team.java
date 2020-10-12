@@ -29,9 +29,15 @@ public class Team implements Serializable {
 
 	private String name;
 
-	//bi-directional many-to-many association to Department
-	@ManyToMany(mappedBy="teams")
-	private List<Department> departments;
+//	//bi-directional many-to-many association to Department
+//	@ManyToMany(mappedBy="teams")
+//	private List<Department> departments;
+	
+	//private List<Cases> cases;
+
+	//bi-directional one-to-one association to DepTeamMapping
+	@OneToMany(mappedBy="team")
+	private List<DepTeamMapping> depTeamMapping;
 
 	//bi-directional many-to-one association to TeamUserMapping
 	@OneToMany(mappedBy="team")
@@ -93,14 +99,21 @@ public class Team implements Serializable {
 		this.teamUserMappings = teamUserMappings;
 	}
 
-	public List<Department> getDepartments() {
-		return departments;
+//	public List<Department> getDepartments() {
+//		return departments;
+//	}
+//
+//	public void setDepartments(List<Department> departments) {
+//		this.departments = departments;
+//	}
+
+	public List<DepTeamMapping> getDepTeamMapping() {
+		return depTeamMapping;
 	}
 
-	public void setDepartments(List<Department> departments) {
-		this.departments = departments;
+	public void setDepTeamMapping(List<DepTeamMapping> depTeamMapping) {
+		this.depTeamMapping = depTeamMapping;
 	}
-
 
 
 }

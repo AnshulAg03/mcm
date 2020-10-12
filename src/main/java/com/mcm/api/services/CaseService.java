@@ -153,7 +153,7 @@ public class CaseService {
 		caseRepository.save(case_);
 		
 		for(Team team: teamList) {
-			CaseTeamMapping caseTeamMapping = new CaseTeamMapping(team, case_, "Active");
+			CaseTeamMapping caseTeamMapping = new CaseTeamMapping(team,case_, "Active");
 			
 			caseTeamMappingRepository.save(caseTeamMapping);
 		}

@@ -2,33 +2,36 @@ package com.mcm.api.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
 public class DepTeamId implements Serializable{
 	private static final long serialVersionUID = 1L;
 
-	private Department department;
+	@Column(name="DID")
+	private String department;
 	
-	private Team team;
+	@Column(name="TID")
+	private String team;
 
-	public Department getDepartment() {
+	public String getDepartment() {
 		return department;
 	}
 
-	public void setDepartment(Department department) {
+	public void setDepartment(String department) {
 		this.department = department;
 	}
 
-	public Team getTeam() {
+	public String getTeam() {
 		return team;
 	}
 
-	public void setTeam(Team team) {
+	public void setTeam(String team) {
 		this.team = team;
 	}
 
-	public DepTeamId(Department department, Team team) {
+	public DepTeamId(String department, String team) {
 		super();
 		this.department = department;
 		this.team = team;
@@ -36,6 +39,43 @@ public class DepTeamId implements Serializable{
 
 	public DepTeamId() {
 		super();
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((team == null) ? 0 : team.hashCode());
+		result = prime * result
+				+ ((department == null) ? 0 : department.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		
+		DepTeamId other = (DepTeamId) obj;
+		
+		if (team == null) {
+			if (other.team != null)
+				return false;
+		} else if (!team.equals(other.team))
+			return false;
+		
+		if (department == null) {
+			if (other.department != null)
+				return false;
+		} else if (!department.equals(other.department))
+			return false;
+		
+		return true;
 	}
 	
 	
