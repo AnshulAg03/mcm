@@ -3,6 +3,8 @@
  */
 package com.mcm.api.repository;
 
+import java.util.List;
+
 import org.springframework.data.repository.CrudRepository;
 
 import com.mcm.api.entity.Cases;
@@ -12,5 +14,5 @@ import com.mcm.api.entity.Cases;
  *
  */
 public interface CaseRepository extends CrudRepository<Cases, String> {
-
+	public List<Cases> findByDepartmentid(String departmentId);
 }

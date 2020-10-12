@@ -9,6 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -21,7 +22,7 @@ import com.mcm.api.dto.request.CreateNewUserRequestDto;
 
 /**
  * The persistent class for the USERS database table.
- * 
+ *
  */
 @Entity
 //@Embeddable
@@ -30,7 +31,7 @@ import com.mcm.api.dto.request.CreateNewUserRequestDto;
 public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	
+
 
 	@Id
 	@GeneratedValue(generator = "system-uuid")
@@ -48,12 +49,10 @@ public class User implements Serializable {
 
 	@Column(unique = true)
 	private String userid;
-	
-	
-	//bi-directional many-to-one association to TeamUserMapping
+		//bi-directional many-to-one association to TeamUserMapping
 		@OneToMany(mappedBy="user")
 		private List<TeamUserMapping> teamUserMappings;
-	
+
 	//bi-directional many-to-one association to Department
 		@ManyToOne(fetch = FetchType.LAZY)
 		@JoinColumn(name="DEPARTMENTID", referencedColumnName="ID")
@@ -62,8 +61,8 @@ public class User implements Serializable {
 
 	public User() {
 	}
-	
-	
+
+
 
 	public User(CreateNewUserRequestDto createNewUserRequestDto, Department department) {
 		super();
@@ -134,7 +133,7 @@ public class User implements Serializable {
 		this.userid = userid;
 	}
 
-	
+
 	public List<TeamUserMapping> getTeamUserMappings() {
 		return this.teamUserMappings;
 	}
