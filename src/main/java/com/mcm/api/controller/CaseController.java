@@ -1,47 +1,49 @@
 package com.mcm.api.controller;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import java.util.Map;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.google.gson.Gson;
-import com.mcm.api.dto.response.cases.CaseListResponseDto;
-import com.mcm.api.entity.Cases;
-import com.mcm.api.repository.CaseRepository;
+import com.mcm.api.services.CaseService;
 
 
 
 @RestController
 public class CaseController {
-	
+
 	@Autowired
-	CaseRepository caseRepository;
-	
+	CaseService caseService;
+
 	@GetMapping("/caseList")
 	public ResponseEntity<String> getCases() throws JSONException {
-		Iterable<Cases> cases = caseRepository.findAll();
-		List<CaseListResponseDto> caseListResponses = 
-				  StreamSupport.stream(cases.spliterator(), false).map(CaseListResponseDto::new)
-				    .collect(Collectors.toList());
+		return new ResponseEntity(caseService.getCases(), HttpStatus.OK) ;
+	}
 
-		JSONObject responseObj = new JSONObject();
-		Gson gson = new Gson();
-		for(CaseListResponseDto caseListResponse: caseListResponses) {
-			JSONArray responseArray = new JSONArray();
-			responseArray.put(new JSONObject(gson.toJson(caseListResponse)));
-			responseObj.put(caseListResponse.getId(), responseArray);
-		}
-		
-		return new ResponseEntity(responseObj.toString(), HttpStatus.OK) ;
+	@PostMapping("/caseByuser")
+	public ResponseEntity<String> getCasesByUser(@RequestBody Map<String, String> json) throws JSONException {
+		return new ResponseEntity(caseService.getCasesByUser(json.get("userid")), HttpStatus.OK) ;
+	}
+
+	@PostMapping("/caseBydepartmentid")
+	public ResponseEntity<String> getCasesByDepartmentId(@RequestBody Map<String, String> json) throws JSONException {
+		return new ResponseEntity(caseService.getCasesByDepartmentId(json.get("departid")), HttpStatus.OK) ;
+	}
+	
+	@GetMapping("/caseBydepartment")
+	public ResponseEntity<String> groupByDepartment() throws JSONException {
+		return new ResponseEntity(caseService.groupByDepartment(), HttpStatus.OK) ;
+	}
+	
+	@PostMapping("/caseInsert")
+	public ResponseEntity<String> caseInsert(@RequestBody Map<String, Object> json) throws JSONException {
+		return new ResponseEntity(caseService.caseInsert(json), HttpStatus.OK) ;
 	}
 
 }

@@ -28,7 +28,7 @@ public class CaseListResponseDto {
 		this.casetype = case_.getCasetype();
 		this.duedate = case_.getDuedate();
 		this.status = case_.getStatus();
-		this.name = case_.getTeams().get(0).getName();
+		this.name = case_.getCaseTeamMappings().get(0).getTeam().getName();
 		this.department = case_.getDepartment().getDepartment();
 		this.departmentid = case_.getDepartmentid();
 	}

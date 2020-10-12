@@ -1,9 +1,16 @@
 package com.mcm.api.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
+
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 
 /**
@@ -38,22 +45,12 @@ public class Cases implements Serializable {
 
 	private String status;
 	
+	@OneToMany(mappedBy="case_")
+	private List<CaseTeamMapping> caseTeamMappings;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="DEPARTMENTID", referencedColumnName="ID")
+    @JoinColumn(name="DEPARTMENTID", referencedColumnName="ID", insertable = false, updatable = false)
     private Department department;
-
-	//bi-directional many-to-many association to Team
-	@ManyToMany
-	@JoinTable(
-		name="CASE_TEAM_MAPPING"
-		, joinColumns={
-			@JoinColumn(name="CID", referencedColumnName="ID")
-			}
-		, inverseJoinColumns={
-			@JoinColumn(name="TID", referencedColumnName="TEAMID")
-			}
-		)
-	private List<Team> teams;
 
 	public Cases() {
 	}
@@ -137,15 +134,15 @@ public class Cases implements Serializable {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
-	public List<Team> getTeams() {
-		return this.teams;
-	}
-
-	public void setTeams(List<Team> teams) {
-		this.teams = teams;
-	}
 	
+	public List<CaseTeamMapping> getCaseTeamMappings() {
+		return caseTeamMappings;
+	}
+
+	public void setCaseTeamMappings(List<CaseTeamMapping> caseTeamMappings) {
+		this.caseTeamMappings = caseTeamMappings;
+	}
+
 	public Department getDepartment() {
 		return department;
 	}
