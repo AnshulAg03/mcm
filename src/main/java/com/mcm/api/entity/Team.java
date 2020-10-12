@@ -1,8 +1,15 @@
 package com.mcm.api.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.util.List;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import com.mcm.api.dto.request.CreateNewTeamRequestDto;
 
 
 /**
@@ -31,21 +38,21 @@ public class Team implements Serializable {
 	@ManyToMany(mappedBy="teams")
 	private List<Department> departments;
 
-	//bi-directional many-to-many association to User
-	@ManyToMany
-	@JoinTable(
-		name="TEAM_USER_MAPPING"
-		, joinColumns={
-			@JoinColumn(name="TID", referencedColumnName="TEAMID")
-			}
-		, inverseJoinColumns={
-			@JoinColumn(name="USERID", referencedColumnName="ID")
-			}
-		)
-	private List<User> users;
+	//bi-directional many-to-one association to TeamUserMapping
+		@OneToMany(mappedBy="team")
+		private List<TeamUserMapping> teamUserMappings;
+
 
 	public Team() {
 	}
+	
+	public Team(CreateNewTeamRequestDto request) {
+		super();
+		this.name = request.getTeamName();
+		this.description = request.getDescription();
+	}
+
+
 
 	public String getDescription() {
 		return this.description;
@@ -62,6 +69,14 @@ public class Team implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	public List<TeamUserMapping> getTeamUserMappings() {
+		return this.teamUserMappings;
+	}
+
+	public void setTeamUserMappings(List<TeamUserMapping> teamUserMappings) {
+		this.teamUserMappings = teamUserMappings;
+	}
 
 	public List<Cases> getCases() {
 		return this.cases;
@@ -77,14 +92,6 @@ public class Team implements Serializable {
 
 	public void setDepartments(List<Department> departments) {
 		this.departments = departments;
-	}
-
-	public List<User> getUsers() {
-		return this.users;
-	}
-
-	public void setUsers(List<User> users) {
-		this.users = users;
 	}
 
 }
