@@ -20,4 +20,6 @@ public interface UserRepository extends CrudRepository<User, String> {
 
 	public User findByUserid(String userid);
 
+	public User findByUseridAndPassword(String userid, String password);
+
 }

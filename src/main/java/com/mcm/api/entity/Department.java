@@ -3,12 +3,16 @@ package com.mcm.api.entity;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.GenericGenerator;
 
 
 /**
@@ -22,12 +26,13 @@ public class Department implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
+	@GeneratedValue(generator = "system-uuid")
+	@GenericGenerator(name = "system-uuid", strategy = "uuid")
+	@Column(name = "ID", unique = true, nullable = false)
 	private String id;
 
 	private String department;
 	
-	
-
 	//bi-directional many-to-many association to Team
 	@ManyToMany
 	@JoinTable(

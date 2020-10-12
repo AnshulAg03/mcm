@@ -16,6 +16,10 @@ public class TeamUserId implements Serializable{
 		this.team = team;
 		this.user = user;
 	}
+	
+	public TeamUserId() {
+		
+	}
 
 	public Team getTeam() {
 		return team;

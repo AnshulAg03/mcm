@@ -2,29 +2,18 @@ package com.mcm.api.dto.request;
 
 import java.util.List;
 
-public class CreateNewTeamRequestDto {
+public class UpdateTeamRequestDto {
 
 	private String department;
+	
 	private String teamName;
 	private String description;
 
 	private List<String> teamMembers;
 
 	private String isAdmin;
-	
-	public CreateNewTeamRequestDto() {
-		
-	}
 
-	public CreateNewTeamRequestDto(String department, String teamName, String description, List<String> teamMembers,
-			String isAdmin) {
-		super();
-		this.department = department;
-		this.teamName = teamName;
-		this.description = description;
-		this.teamMembers = teamMembers;
-		this.isAdmin = isAdmin;
-	}
+	private String teamId;
 
 	public String getDepartment() {
 		return department;
@@ -65,4 +54,13 @@ public class CreateNewTeamRequestDto {
 	public void setIsAdmin(String isAdmin) {
 		this.isAdmin = isAdmin;
 	}
+
+	public String getTeamId() {
+		return teamId;
+	}
+
+	public void setTeamId(String teamId) {
+		this.teamId = teamId;
+	}
+
 }

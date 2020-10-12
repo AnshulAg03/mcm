@@ -25,9 +25,7 @@ public class Attachment implements Serializable {
 
 	private String dbfilename;
 
-	private String filen;
-
-	
+	private String filen;	
 
 	private String teamid;
 

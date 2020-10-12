@@ -38,10 +38,6 @@ public class UserController {
 	@GetMapping("/userList")
 	public ResponseEntity getUsers() {
 		Iterable<User> users = userRepository.findAll();
-//		Iterator<User> usersItr = users.iterator();
-//		while (usersItr.hasNext()) {
-//			customers.add(new CustomerResponseDto(usersItr.next()));
-//		}
 		List<UserListResponseDto> result = 
 				  StreamSupport.stream(users.spliterator(), false).filter(user->user.getLogintype()!="superadmin").map(UserListResponseDto::new)
 				    .collect(Collectors.toList());
