@@ -23,10 +23,13 @@ import com.mcm.api.dto.response.GetAllLeadersResponseDto;
 import com.mcm.api.dto.response.SuccessResponseDto;
 import com.mcm.api.dto.response.TeamListResponseDto;
 import com.mcm.api.dto.response.isLeaderResponseDto;
-import com.mcm.api.entity.Department;
+import com.mcm.api.entity.CaseTeamMapping;
+import com.mcm.api.entity.Cases;
 import com.mcm.api.entity.Team;
 import com.mcm.api.entity.TeamUserMapping;
 import com.mcm.api.entity.User;
+import com.mcm.api.repository.CaseRepository;
+import com.mcm.api.repository.CaseTeamMappingRepository;
 import com.mcm.api.repository.DepartmentRepository;
 import com.mcm.api.repository.TeamRepository;
 import com.mcm.api.repository.TeamUserMappingRepository;
@@ -43,6 +46,12 @@ public class TeamController {
 
 	@Autowired
 	TeamUserMappingRepository teamUserMappingRepository;
+	
+	@Autowired
+	CaseTeamMappingRepository caseTeamMappingRepository;
+	
+	@Autowired
+	CaseRepository caseRepository;
 	
 	@Autowired
 	DepartmentRepository departmentRepo;
@@ -80,31 +89,31 @@ public class TeamController {
 		return new ResponseEntity<>(new SuccessResponseDto("success"), HttpStatus.OK);
 	}
 	
+	
+	//TODO
 	@PostMapping("/teamEdit")
 	public ResponseEntity editTeam(@RequestBody UpdateTeamRequestDto request) {
-
-		Optional<Team> team = teamRepository.findById(request.getTeamId());
-		if(team.isPresent()) {
-			Team t = team.get();
-			t.setName(request.getTeamName());
-			t.setDescription(request.getDescription());
-			List<Department> deptList = new ArrayList<Department>();
-			Optional<Department> d = departmentRepo.findById(request.getDepartment());
-			if(d.isPresent()) {
-				Department dept = d.get();
-				deptList.add(dept);
+		Optional<Cases> case_ = caseRepository.findById(request.getCaseid());
+		Optional<Team> team = teamRepository.findById(request.getTeamid());
+		if(case_.isPresent() && team.isPresent()) {
+			List<CaseTeamMapping> caseTeamMappingList = caseTeamMappingRepository.findByCasesAndTeam(case_.get(),team.get());
+			if(!caseTeamMappingList.isEmpty()) {
+				for(CaseTeamMapping caseTeamMapping: caseTeamMappingList) {
+					Iterable<TeamUserMapping> teamUserMappingList = teamUserMappingRepository.findAllByTeam(team.get());
+					StreamSupport.stream(teamUserMappingList.spliterator(), false).forEach(tum->{
+						tum.setStatus("Deassociate");
+						tum.setIsleader("");
+						teamUserMappingRepository.save(tum);
+					});
+				}
 			}
-
-			teamRepository.save(t);
-			
-			return new ResponseEntity<>(new SuccessResponseDto("success"), HttpStatus.OK);
-		}
-		return new ResponseEntity<>(new ErrorResponseDto("Team doesn't exist"), HttpStatus.OK);
+			return new ResponseEntity(new SuccessResponseDto("success"), HttpStatus.OK);
+		} 
+		return new ResponseEntity(new ErrorResponseDto("case id not found"), HttpStatus.OK);
 	}
 	
 	@GetMapping("/isleader")
 	public ResponseEntity fetchLeader(@RequestBody isLeaderRequestDto request) {
-
 		Optional<User> user = userRepository.findById(request.getUserid());
 		if(!user.isPresent()) {
 			return new ResponseEntity<>("", HttpStatus.OK);
@@ -112,7 +121,6 @@ public class TeamController {
 		Iterable<TeamUserMapping> teamUsers = teamUserMappingRepository.findAllByUser(user.get());
 		List<isLeaderResponseDto> result = StreamSupport.stream(teamUsers.spliterator(), false).map(TeamUserMapping::getTeam).map(isLeaderResponseDto::new)
 				.collect(Collectors.toList());
-
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
@@ -121,7 +129,6 @@ public class TeamController {
 		Iterable<TeamUserMapping> teams = teamUserMappingRepository.findAll();
 		List<GetAllLeadersResponseDto> result = 
 				StreamSupport.stream(teams.spliterator(), false).filter(tum->tum.getUser()!=null).map(GetAllLeadersResponseDto::new).collect(Collectors.toList());
-		
 		return new ResponseEntity(result, HttpStatus.OK) ;
 	}
 	

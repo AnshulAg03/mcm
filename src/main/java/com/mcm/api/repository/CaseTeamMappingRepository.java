@@ -1,5 +1,7 @@
 package com.mcm.api.repository;
 
+import java.util.List;
+
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,5 +12,5 @@ import com.mcm.api.entity.Team;
 
 @Repository
 public interface CaseTeamMappingRepository extends CrudRepository<CaseTeamMapping, CaseTeamId>{
-	CaseTeamMapping findByCasesAndTeam(Cases caseid, Team teamid);
+	List<CaseTeamMapping> findByCasesAndTeam(Cases caseid, Team teamid);
 }

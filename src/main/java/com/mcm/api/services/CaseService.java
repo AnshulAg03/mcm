@@ -207,10 +207,13 @@ public class CaseService {
 		Optional<Team> team = teamRepository.findById(request.getTeamid());
 
 		if(case_.isPresent() && team.isPresent()) {
-			CaseTeamMapping cases = caseTeamMappingRepository.findByCasesAndTeam(case_.get(),team.get());
-			if(cases != null) {
-				cases.setStatus("Close");
-				caseTeamMappingRepository.save(cases);
+			List<CaseTeamMapping> caseTeamMappingList = caseTeamMappingRepository.findByCasesAndTeam(case_.get(),team.get());
+			if(!caseTeamMappingList.isEmpty()) {
+				for(CaseTeamMapping caseTeamMapping: caseTeamMappingList) {
+					caseTeamMapping.setStatus("Close");
+					caseTeamMappingRepository.save(caseTeamMapping);
+				}
+				
 			}
 			return new SuccessResponseDto("success").toString();
 		} 
