@@ -68,7 +68,10 @@ public class CaseController {
 	public ResponseEntity<String> dashboard() throws JSONException{
 		return new ResponseEntity(caseService.dashboard(), HttpStatus.OK) ;
 	}
-
 	
+	@PostMapping("/caseClose")
+	public ResponseEntity<String> caseClose(@RequestBody Map<String, String> json) throws JSONException {
+		return new ResponseEntity(caseService.caseClose(json.get("caseid")), HttpStatus.OK) ;
+	}
 
 }

@@ -1,13 +1,14 @@
 package com.mcm.api.services;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -15,11 +16,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.MultiValueMap;
 
 import com.google.gson.Gson;
 import com.mcm.api.dto.request.RemoveTeamRequestBody;
@@ -50,7 +49,10 @@ public class CaseService {
 
 	@Autowired
 	CaseTeamMappingRepository caseTeamMappingRepository;
-
+	
+	@Value("${app.upload.directory}")
+	String uploadPath;
+	
 	public CaseService() {
 
 	}
@@ -164,7 +166,24 @@ public class CaseService {
 
 			caseTeamMappingRepository.save(caseTeamMapping);
 		}
+		
+		File file = new File(uploadPath.concat("/").concat(gid));
+		file.mkdir();
+		
+		JSONObject response = new JSONObject();
+		response.put("code", "success");
 
+		return response.toString();
+	}
+	
+	public String caseClose(String caseId) throws JSONException {
+		Optional<Cases> caseOptional_ = caseRepository.findById(caseId);
+		Cases case_ = caseOptional_.get();
+		
+		case_.setStatus("Close");
+		
+		caseRepository.save(case_);
+		
 		JSONObject response = new JSONObject();
 		response.put("code", "success");
 
@@ -173,13 +192,10 @@ public class CaseService {
 
 	public String dashboard() throws JSONException {
 		Iterable<Cases> allCases = caseRepository.findAll();
-
 		Map<String, Long> casesCountMap = 
 				StreamSupport.stream(allCases.spliterator(), false).collect(Collectors.groupingBy(Cases::getStatus, Collectors.counting()));
 
 		int dueCount = caseRepository.countByStatusAndDuedateLessThan("Active",new BigDecimal(System.currentTimeMillis()));
-
-
 		JSONArray responseArray = new JSONArray();
 		JSONObject responseObj = new JSONObject();
 		for(Entry<String, Long> statusSet: casesCountMap.entrySet()) {
@@ -192,7 +208,6 @@ public class CaseService {
 		}
 
 		if(dueCount>0) {
-
 			JSONArray statusArray = new JSONArray();
 			JSONObject obj = new JSONObject();
 			obj.put("VALUE", dueCount);
@@ -205,7 +220,6 @@ public class CaseService {
 	public String removeTeam(RemoveTeamRequestBody request) {
 		Optional<Cases> case_ = caseRepository.findById(request.getCaseid());
 		Optional<Team> team = teamRepository.findById(request.getTeamid());
-
 		if(case_.isPresent() && team.isPresent()) {
 			List<CaseTeamMapping> caseTeamMappingList = caseTeamMappingRepository.findByCasesAndTeam(case_.get(),team.get());
 			if(!caseTeamMappingList.isEmpty()) {
@@ -213,7 +227,6 @@ public class CaseService {
 					caseTeamMapping.setStatus("Close");
 					caseTeamMappingRepository.save(caseTeamMapping);
 				}
-				
 			}
 			return new SuccessResponseDto("success").toString();
 		} 
