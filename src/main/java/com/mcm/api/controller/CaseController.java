@@ -61,7 +61,6 @@ public class CaseController {
 	@PostMapping("/teamDisable")
 	public ResponseEntity removeTeam(@RequestBody RemoveTeamRequestBody request){
 		return new ResponseEntity(caseService.removeTeam(request), HttpStatus.OK) ;
-		
 	}
 
 	@GetMapping("/dashboard")
